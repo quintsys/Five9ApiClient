@@ -7,7 +7,7 @@ namespace Quintsys.Five9ApiClient.Tests
     [TestFixture]
     public class AdminWebServiceTests
     {
-        private AdminWebService _adminWebService;
+        private IAdminWebService _adminWebService;
 
         [SetUp]
         public void Setup()

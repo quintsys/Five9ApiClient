@@ -6,7 +6,12 @@ using System.Threading.Tasks;
 
 namespace Quintsys.Five9ApiClient
 {
-    public class AdminWebService
+    public interface IAdminWebService
+    {
+        Task<bool> CreateList(string listName);
+    }
+
+    public class AdminWebService : IAdminWebService
     {
         private readonly string _username;
         private readonly string _password;

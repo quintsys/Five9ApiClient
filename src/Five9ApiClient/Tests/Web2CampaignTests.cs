@@ -6,7 +6,7 @@ namespace Quintsys.Five9ApiClient.Tests
     [TestFixture]
     public class Web2CampaignTests
     {
-        private Web2Campaign _web2Campaign;
+        private IWeb2Campaign _web2Campaign;
 
 
         [SetUp]

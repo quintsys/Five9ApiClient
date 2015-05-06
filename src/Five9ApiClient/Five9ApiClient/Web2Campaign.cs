@@ -5,7 +5,15 @@ using System.Threading.Tasks;
 
 namespace Quintsys.Five9ApiClient
 {
-    public class Web2Campaign
+    public interface IWeb2Campaign
+    {
+        bool F9RetResults { get; set; }
+        string F9RetUrl { get; set; }
+        string OptionalParameters { get; set; }
+        Task<bool> AddToList();
+    }
+
+    public class Web2Campaign : IWeb2Campaign
     {
         private readonly string _f9Domain;
         private readonly string _f9List;

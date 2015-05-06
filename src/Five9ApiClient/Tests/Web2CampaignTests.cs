@@ -1,4 +1,5 @@
 ﻿using NUnit.Framework;
+using Quintsys.EnviromentConfigurationManager;
 
 namespace Quintsys.Five9ApiClient.Tests
 {
@@ -18,10 +19,19 @@ namespace Quintsys.Five9ApiClient.Tests
         public async void AddToList_Returns_True_When_Ran_With_Proper_Parameters()
         {
             _web2Campaign.F9RetResults = true;
-            _web2Campaign.F9RetUrl = "http://ogburnonline.com/five9/1/1/"; // => ToDo: create this url
+            _web2Campaign.F9RetUrl = ReturnUrl();
             _web2Campaign.OptionalParameters = "&number2=3050001111";
+
             bool success = await _web2Campaign.AddToList();
+
             Assert.IsTrue(success);
+        }
+
+        private static string ReturnUrl()
+        {
+            var config = new EnviromentConfigManager();
+            string f9RetUrl = config.Get("FIVE9_RETURN_URL");
+            return string.Format("{0}1/1/", f9RetUrl);
         }
     }
 }

@@ -10,29 +10,20 @@ namespace Quintsys.Five9ApiClient
         bool F9RetResults { get; set; }
         string F9RetUrl { get; set; }
         string OptionalParameters { get; set; }
-        Task<bool> AddToList();
+        Task<bool> AddToList(string f9List, string number1);
     }
 
     public class Web2Campaign : IWeb2Campaign
     {
-        private readonly string _f9Domain;
-        private readonly string _f9List;
-        private readonly string _number1;
         private const string BaseUrl = "https://api.five9.com/web2campaign/";
+        private readonly string _f9Domain;
 
-        public Web2Campaign(string f9Domain, string f9List, string number1)
+        public Web2Campaign(string f9Domain)
         {
-            if (string.IsNullOrWhiteSpace(f9Domain))
+            if (f9Domain == null)
                 throw new ArgumentNullException("f9Domain");
-            if (string.IsNullOrWhiteSpace(f9List))
-                throw new ArgumentNullException("f9List");
-            if (string.IsNullOrWhiteSpace(number1))
-                throw new ArgumentNullException("number1");
 
             _f9Domain = f9Domain;
-            _f9List = f9List;
-            _number1 = number1;
-
             F9RetResults = true;
         }
 
@@ -40,11 +31,16 @@ namespace Quintsys.Five9ApiClient
         public string F9RetUrl { get; set; }
         public string OptionalParameters { get; set; }
 
-        public async Task<bool> AddToList()
+        public async Task<bool> AddToList(string f9List, string number1)
         {
+            if (f9List == null) 
+                throw new ArgumentNullException("f9List");
+            if (number1 == null) 
+                throw new ArgumentNullException("number1");
+
             using (HttpClient httpClient = new HttpClient(new HttpClientHandler {AllowAutoRedirect = true}))
             {
-                using (HttpResponseMessage response = await httpClient.GetAsync(requestUri: AddToListUrl()))
+                using (HttpResponseMessage response = await httpClient.GetAsync(requestUri: AddToListUrl(f9List, number1)))
                 {
                     if (string.IsNullOrWhiteSpace(F9RetUrl))
                         return response.IsSuccessStatusCode;
@@ -61,13 +57,13 @@ namespace Quintsys.Five9ApiClient
             }
         }
 
-        private string AddToListUrl()
+        private string AddToListUrl(string f9List, string number1)
         {
             var stringBuilder = new StringBuilder();
             stringBuilder.Append(BaseUrl).Append("AddToList");
             stringBuilder.AppendFormat("?F9domain={0}", _f9Domain);
-            stringBuilder.AppendFormat("&F9list={0}", _f9List);
-            stringBuilder.AppendFormat("&number1={0}", _number1);
+            stringBuilder.AppendFormat("&F9list={0}", f9List);
+            stringBuilder.AppendFormat("&number1={0}", number1);
 
             stringBuilder.AppendFormat("&F9retURL={0}", F9RetUrl);
             stringBuilder.AppendFormat("&F9retResults={0}", F9RetResults);

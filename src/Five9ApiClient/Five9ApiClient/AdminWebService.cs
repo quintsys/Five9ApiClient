@@ -1,6 +1,7 @@
 using System;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace Quintsys.Five9ApiClient
@@ -13,9 +14,9 @@ namespace Quintsys.Five9ApiClient
 
         public AdminWebService(string username, string password)
         {
-            if (username == null) 
+            if (string.IsNullOrWhiteSpace(username))
                 throw new ArgumentNullException("username");
-            if (password == null) 
+            if (string.IsNullOrWhiteSpace(password))
                 throw new ArgumentNullException("password");
 
             _username = username;
@@ -24,7 +25,7 @@ namespace Quintsys.Five9ApiClient
 
         public async Task<bool> CreateList(string listName)
         {
-            if (listName == null) 
+            if (string.IsNullOrWhiteSpace(listName)) 
                 throw new ArgumentNullException("listName");
 
             const string envelopeFormat = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>" +
@@ -36,11 +37,12 @@ namespace Quintsys.Five9ApiClient
                                           "</ser:createList>" +
                                           "</soapenv:Body>" +
                                           "</soapenv:Envelope>";
-            var data = string.Format(envelopeFormat, listName);
 
+            var data = string.Format(envelopeFormat, listName);
             using (HttpClient httpClient = new HttpClient())
             {
-                httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(_username, _password);
+                var encoded = Convert.ToBase64String(Encoding.ASCII.GetBytes(string.Format("{0}:{1}", _username, _password)));
+                httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", encoded);
                 using (HttpResponseMessage response = await httpClient.PostAsync(requestUri: BaseUrl, content: new StringContent(data)))
                 {
                     return response.IsSuccessStatusCode;

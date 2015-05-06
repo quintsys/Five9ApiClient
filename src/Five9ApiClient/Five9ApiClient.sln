@@ -5,6 +5,8 @@ VisualStudioVersion = 12.0.31101.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Five9ApiClient", "Five9ApiClient\Five9ApiClient.csproj", "{F346303B-A5EF-45E1-A70D-4C12E479C841}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tests", "Tests\Tests.csproj", "{858F4482-F545-4758-A04C-ECC57B6B928E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{F346303B-A5EF-45E1-A70D-4C12E479C841}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F346303B-A5EF-45E1-A70D-4C12E479C841}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F346303B-A5EF-45E1-A70D-4C12E479C841}.Release|Any CPU.Build.0 = Release|Any CPU
+		{858F4482-F545-4758-A04C-ECC57B6B928E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{858F4482-F545-4758-A04C-ECC57B6B928E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{858F4482-F545-4758-A04C-ECC57B6B928E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{858F4482-F545-4758-A04C-ECC57B6B928E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

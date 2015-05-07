@@ -26,14 +26,12 @@ namespace Quintsys.Five9ApiClient.Tests
             const int leadId = 1;
             const int batchId = 1;
 
-            _web2Campaign = new Web2Campaign("invalid domain")
-            {
-                F9RetResults = true,
-                F9RetUrl = string.Format("{0}{1}/{2}/", _f9ReturnUrl, leadId, batchId),
-                OptionalParameters = "&number2=3050001111"
-            };
+            _web2Campaign = new Web2Campaign("invalid domain");
 
-            var success = await _web2Campaign.AddToList("this list does not exist", "9540001111");
+            var success = await _web2Campaign.AddToList(
+                f9List: "this list does not exist", number1: "9540001111",
+                optionalParameters: "number2=3050001111",
+                f9RetUrl: string.Format("{0}{1}/{2}/", _f9ReturnUrl, leadId, batchId));
 
             Assert.IsTrue(success);
         }
@@ -44,14 +42,12 @@ namespace Quintsys.Five9ApiClient.Tests
             const int leadId = 1;
             const int batchId = 1;
 
-            _web2Campaign = new Web2Campaign("invalid domain")
-            {
-                F9RetResults = true,
-                F9RetUrl = string.Format("{0}{1}/{2}/", _f9ReturnUrl, leadId, batchId),
-                OptionalParameters = "&number2=3050001111"
-            };
+            _web2Campaign = new Web2Campaign("invalid domain");
 
-            var success = await _web2Campaign.AddToList("this list does not exist", "9540001111");
+            var success = await _web2Campaign.AddToList(f9List: "this list does not exist",
+                number1: "9540001111",
+                optionalParameters: "number2=3050001111",
+                f9RetUrl: string.Format("{0}{1}/{2}/", _f9ReturnUrl, leadId, batchId));
 
             Assert.IsTrue(success);
         }
@@ -62,11 +58,10 @@ namespace Quintsys.Five9ApiClient.Tests
             const int leadId = 1;
             const int batchId = 1;
 
-            _web2Campaign.F9RetResults = true;
-            _web2Campaign.F9RetUrl = string.Format("{0}{1}/{2}/", _f9ReturnUrl, leadId, batchId);
-            _web2Campaign.OptionalParameters = "&number2=3050001111";
-
-            var success = await _web2Campaign.AddToList("TEST", "9540001111");
+            var success = await _web2Campaign.AddToList(f9List: "TEST",
+                number1: "9540001111",
+                optionalParameters: "number2=3050001111",
+                f9RetUrl: string.Format("{0}{1}/{2}/", _f9ReturnUrl, leadId, batchId));
 
             Assert.IsTrue(success);
         }

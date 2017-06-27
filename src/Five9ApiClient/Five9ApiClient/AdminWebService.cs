@@ -13,6 +13,7 @@ namespace Quintsys.Five9ApiClient
 
     public class AdminWebService : IAdminWebService
     {
+        private static HttpClient Client = new HttpClient();
         private readonly string _username;
         private readonly string _password;
         private const string BaseUrl = "https://api.five9.com/wsadmin/AdminWebService";
@@ -26,13 +27,28 @@ namespace Quintsys.Five9ApiClient
 
             _username = username;
             _password = password;
+
+            var encoded = Convert.ToBase64String(Encoding.ASCII.GetBytes(string.Format("{0}:{1}", _username, _password)));
+            Client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", encoded);
         }
 
         public async Task<bool> CreateList(string listName)
         {
-            if (string.IsNullOrWhiteSpace(listName)) 
+            if (string.IsNullOrWhiteSpace(listName))
                 throw new ArgumentNullException("listName");
 
+            var request = new HttpRequestMessage(method: HttpMethod.Post, requestUri: BaseUrl);
+            string content = CreateListContent(listName);
+            request.Content = new StringContent(content: content, encoding: Encoding.UTF8, mediaType: "text/xml");
+
+            using (var response = await Client.SendAsync(request))
+            {
+                return response.IsSuccessStatusCode;
+            }
+        }
+
+        private static string CreateListContent(string listName)
+        {
             const string envelopeFormat = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>" +
                                           "<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:ser=\"http://service.admin.ws.five9.com/\">" +
                                           "<soapenv:Header/>" +
@@ -42,17 +58,7 @@ namespace Quintsys.Five9ApiClient
                                           "</ser:createList>" +
                                           "</soapenv:Body>" +
                                           "</soapenv:Envelope>";
-
-            var data = string.Format(envelopeFormat, listName);
-            using (HttpClient httpClient = new HttpClient())
-            {
-                var encoded = Convert.ToBase64String(Encoding.ASCII.GetBytes(string.Format("{0}:{1}", _username, _password)));
-                httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", encoded);
-                using (HttpResponseMessage response = await httpClient.PostAsync(requestUri: BaseUrl, content: new StringContent(data)))
-                {
-                    return response.IsSuccessStatusCode;
-                }
-            }
+            return string.Format(envelopeFormat, listName);
         }
     }
 }

@@ -14,6 +14,7 @@ namespace Quintsys.Five9ApiClient
     {
         private const string BaseUrl = "https://api.five9.com/web2campaign/";
         private readonly string _f9Domain;
+        private static HttpClient Client = new HttpClient(new HttpClientHandler { AllowAutoRedirect = true });
 
         public Web2Campaign(string f9Domain)
         {
@@ -30,8 +31,8 @@ namespace Quintsys.Five9ApiClient
             if (number1 == null)
                 throw new ArgumentNullException("number1");
 
-            using (HttpClient httpClient = new HttpClient(new HttpClientHandler {AllowAutoRedirect = true}))
-            using (HttpResponseMessage response = await httpClient.GetAsync(requestUri: AddToListUrl(f9List, number1, optionalParameters, f9RetUrl, f9RetResults)))
+            var requestUri = AddToListUrl(f9List, number1, optionalParameters, f9RetUrl, f9RetResults);
+            using (HttpResponseMessage response = await Client.GetAsync(requestUri: requestUri))
             {
                 if (string.IsNullOrWhiteSpace(f9RetUrl))
                     return response.IsSuccessStatusCode;
@@ -40,7 +41,8 @@ namespace Quintsys.Five9ApiClient
                 if (responseUri.Contains(BaseUrl))
                 {
                     // there was no redirect!
-                    ReportError(string.Format("{0}?F9errCode={1}&F9errDesc={2}", f9RetUrl, (int) response.StatusCode, response.ReasonPhrase));
+                    var errorReportUrl = string.Format("{0}?F9errCode={1}&F9errDesc={2}", f9RetUrl, (int)response.StatusCode, response.ReasonPhrase);
+                    await Client.GetAsync(requestUri: errorReportUrl);
                 }
 
                 return response.IsSuccessStatusCode;
@@ -63,14 +65,6 @@ namespace Quintsys.Five9ApiClient
                 stringBuilder.AppendFormat("&{0}", optionalParameters);
             }
             return stringBuilder.ToString();
-        }
-
-        private static async void ReportError(string url)
-        {
-            using (HttpClient httpClient = new HttpClient(new HttpClientHandler {AllowAutoRedirect = false}))
-            {
-                await httpClient.GetAsync(requestUri: url);
-            }
         }
     }
 }
